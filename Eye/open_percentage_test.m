@@ -20,12 +20,9 @@ images = {
     [path2 'right_3.png']
     [path2 'right_4.png']};
 
-bg_thickness = 10;
-
 for idx = 1:numel(images)
     image_name = images{idx};
     in = imread(image_name);
-    I = rgb2gray(in);
     
 %     subplot(3,4,1);
 %     imshowpair(in, I, 'montage');
@@ -49,23 +46,9 @@ for idx = 1:numel(images)
 %     imshowpair(out1, out2, 'montage');
     
 %     subplot(3,4,6);
-    mask = zeros(size(I));
-    mask(bg_thickness:end-bg_thickness,bg_thickness:end-bg_thickness) = 1;
-    foreground = activecontour(I, mask, 300, 'edge');
-    out1 = uint8(mask).*I;
-    [ x, y, w, h ] = get_bounding_box(foreground);
-    out1 = insertShape(out1, 'Rectangle', [ x, y, w, h ], 'Color', 'red');
-    out2 = foreground;
-%     foreground = insertShape(uint8(255*foreground), 'circle', [10 30 30], 'LineWidth', 5);
-    imshowpair(out1, out2, 'montage');
+    show_eyes(in);
     
-    disp(w/h);
-    
-    while(waitforbuttonpress ~= 1)
-        disp('Press ''q'' to quit or any other key to continue.');
-    end
-    p = get(gcf, 'CurrentCharacter');
-    if(p=='q') % Press 'q' to exit.
+    if(wait_key('q'))
         break
     end
 end
