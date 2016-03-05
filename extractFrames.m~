@@ -1,0 +1,14 @@
+clear
+videopath = './Training_Data/Videos/Ani/20160220_110216.mp4';
+writepath = './Training_Data/Images/Ani/';
+video = VideoReader(videopath);
+i=0;
+num = 1;
+while video.hasFrame
+    frame = video.readFrame;
+    if(mod(i, 30*3) == 0)
+        write = VideoWriter(sprintf('./Training_Data/Videos/Ani/segment_%g.mp4', num));
+        num=num+1;
+    end
+    writeVideo(wri
+end
