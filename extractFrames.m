@@ -2,20 +2,21 @@ clear
 videopath = './Training_Data/Videos/Tom/20160220_110118.mp4';
 video = VideoReader(videopath);
 frameRate = round(video.FrameRate);
-i=0;
-num = 1;
+framecount=0;
+segmentnum = 1;
+secondspersegment = 3;
 while video.hasFrame
     f = video.readFrame;
-    if(mod(i, frameRate*3) == 0)
-        if(num~=1)
+    if(mod(framecount, frameRate*secondspersegment) == 0)
+        if(segmentnum~=1)
             close(write);
         end
-        write = VideoWriter(sprintf('./Training_Data/Videos/Tom/segment_%g.mp4', num));
+        write = VideoWriter(sprintf('./Training_Data/Videos/Tom/segment_%g.mp4', segmentnum));
         write.FrameRate = frameRate;
         open(write);
-        num=num+1;
+        segmentnum=segmentnum+1;
     end
     writeVideo(write, f);
-    i=i+1;
+    framecount=framecount+1;
 end
 close(write);
