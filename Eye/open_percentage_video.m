@@ -11,11 +11,16 @@ while(hasFrame(v))
 %     [in,Map] = frame2im(videoFrame);
     
     in = img.CData;
-    show_eyes(in);
+    out = find_eyes(in);
+%     out = rgb2gray(out);
+    right_eye = out(:,1:floor(end/2),:);
+%     imshow(right_eye);
+    show_eyes_video(right_eye);
     
-    if(wait_key('q'))
-        break
-    end
+    pause(0.1);
+%     if(wait_key('q'))
+%         break
+%     end
 end
 
 clear; clc; close all

@@ -1,12 +1,12 @@
-function [ ] = show_eyes( in )
+function [ ] = show_eyes_video( in )
     
     I = rgb2gray(in);
 
-    bg_thickness = 10;
+    bg_thickness = 20;
     num_iterations = 300;
 
     mask = zeros(size(I));
-    mask(bg_thickness:end-bg_thickness,bg_thickness:end-bg_thickness) = 1;
+    mask(bg_thickness:end-bg_thickness,1:end-3*bg_thickness) = 1;
     foreground = activecontour(I, mask, num_iterations, 'edge');
     out1 = uint8(mask).*I;
     [ x, y, w, h ] = get_bounding_box(foreground);
