@@ -7,14 +7,14 @@ clear; clc; close all
 path1 = '..\Training_Data\images\sapiro\';
 path2 = '..\Training_Data\images\Tom\';
 images = {
-    [path1 'right_1.png']
-    [path1 'right_2.png']
-    [path1 'right_3.png']
-    [path1 'right_4.png']
-    [path1 'right_5.png']
-    [path1 'right_6.png']
-    [path1 'right_7.png']
-    [path1 'right_8.png']
+%     [path1 'right_1.png']
+%     [path1 'right_2.png']
+%     [path1 'right_3.png']
+%     [path1 'right_4.png']
+%     [path1 'right_5.png']
+%     [path1 'right_6.png']
+%     [path1 'right_7.png']
+%     [path1 'right_8.png']
     [path2 'right_1.png']
     [path2 'right_2.png']
     [path2 'right_3.png']

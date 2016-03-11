@@ -1,7 +1,9 @@
 import cv2
-# import cv
 import eyes
 import time
+# import matlab.engine
+
+# eng = matlab.engine.start_matlab("'cd C:/Users/User/OneDrive/Duke/6_Spring_2016/ECE_590/drowsiness-detection/Eye'")
 
 # path = 'C:/Users/User/OneDrive/Duke/6_Spring_2016/ECE_590/drowsiness-detection/Training_Data/images/Tom/'
 # files = ['right_1.png', 'right_2.png']
@@ -31,7 +33,7 @@ while capture.isOpened():
             # cv2.moveWindow('in', 400, 0)
             # cv2.resizeWindow('in', 400, 400)
             # img_out = eyes.show_eyes(img)
-            img_out = eyes.find_eyes(img)
+            img_out = eyes.find_eyes(img, None)
             cv2.imshow('out', img_out)
         else:
             print 'zero size'
@@ -44,8 +46,10 @@ while capture.isOpened():
         print 'no input'
         break
     i += 1
-    if cv2.waitKey(1) == ord('q'):
+    if cv2.waitKey(30) == ord('q'):
         break
 
 capture.release()
 cv2.destroyAllWindows()
+
+# eng.quit()
