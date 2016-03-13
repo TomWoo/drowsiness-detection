@@ -54,5 +54,6 @@ def find_eyes(img_in, eng):
     eye_region = roi_gray[ey:ey+eh, ex:ex+ew]
     (height, width) = eye_region.shape[:2]
 
-    img_out = roi_color
+    eye_region_colored = cv2.resize(eye_region_colored, )
+    img_out = eye_region_colored
     return img_out
