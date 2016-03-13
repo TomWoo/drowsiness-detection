@@ -11,8 +11,7 @@ eye_cascade = cv2.CascadeClassifier('C:/Program Files/MATLAB/R2015b/toolbox/visi
 # eye_cascade = cv2.CascadeClassifier('C:/Program Files/MATLAB/R2015b/toolbox/vision/visionutilities/classifierdata/cascade/haar/haarcascade_mcs_eyepair_small.xml')
 
 # Mask parameters
-border = 5
-width_reduction_factor = 1.1
+width_reduction_factor = 0.5
 
 # Grabcut parameters
 num_iters = 1
@@ -32,7 +31,7 @@ def show_eyes(img_in):
     # cv2.drawContours(img_out, contours[0], -1,  (0, 0, 255))
     return img_out
 
-def find_eyes(img_in, eng):
+def find_eyes(img_in, border):
     img = copy(img_in)
 
     # ROI
@@ -47,18 +46,25 @@ def find_eyes(img_in, eng):
             eyes_rect = (x, y, width, height)
     # if eyes_rect is not None:
     #     cv2.rectangle(img, (x, y), (x+width, y+height), (0, 255, 0), 2)
-    (x, y, width, height) = eyes_rect
+
+    # (x, y, width, height) = eyes_rect
+    x = eyes_rect[0]-border
+    y = eyes_rect[1]-border
+    width = eyes_rect[2]+2*border
+    height = eyes_rect[3]+2*border
 
     # Grabcut
     eyes_roi = img[y:y+height,x:x+width]
     mask = np.zeros(eyes_roi.shape[:2],np.uint8)
     bgdModel = np.zeros((1,65),np.float64)
     fgdModel = np.zeros((1,65),np.float64)
-    right_eye_rect = (border, border, int(width/width_reduction_factor), height-border)
+    reduced_width = int(width*width_reduction_factor)
+    right_eye_rect = (border, border, width-2*border, height-2*border)
     cv2.grabCut(eyes_roi,mask,right_eye_rect,bgdModel,fgdModel,num_iters,cv2.GC_INIT_WITH_RECT)
     mask2 = np.where((mask==2)|(mask==0),0,1).astype('uint8')
 
     eyes_roi = eyes_roi*mask2[:,:,np.newaxis]
+    eyes_roi[:height, width-reduced_width:, :] = np.zeros((height, reduced_width, 3), np.uint8)
 
     img_out = cv2.resize(eyes_roi, (2*width, 2*height))
     return img_out

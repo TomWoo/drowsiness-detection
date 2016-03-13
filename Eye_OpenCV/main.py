@@ -14,6 +14,7 @@ import time
 # capture = cv2.VideoCapture(0)
 capture = cv2.VideoCapture('C:/Users/User/OneDrive/Duke/6_Spring_2016/ECE_590/drowsiness-detection/Training_Data/Videos/Tom/20160220_110118.mp4')
 scale = 0.25
+border = 10
 
 # cv2.namedWindow('in')
 cv2.namedWindow('out')
@@ -33,7 +34,7 @@ while capture.isOpened():
             # cv2.moveWindow('in', 400, 0)
             # cv2.resizeWindow('in', 400, 400)
             # img_out = eyes.show_eyes(img)
-            img_out = eyes.find_eyes(img, None)
+            img_out = eyes.find_eyes(img, border)
             cv2.imshow('out', img_out)
         else:
             print 'zero size'
