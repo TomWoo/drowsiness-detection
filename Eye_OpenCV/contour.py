@@ -8,7 +8,7 @@ def draw_rect_contour(img_in, rect):
     contour = np.array([(x, y), (x, y+height),
                         (x+width, y+height), (x+width, y)],
                        dtype=np.int)
-    cv2.drawContours(img, [contour], -1, (255, 0, 0), 1)
+    cv2.drawContours(img, [contour], -1, (0, 0, 255), 1)
     return img
 
 def find_bounding_rect(img_in):

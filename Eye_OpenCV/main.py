@@ -1,6 +1,7 @@
 import cv2
 import time
-import eyes, contour
+import eyes
+import contour
 
 # import matlab.engine
 
@@ -12,9 +13,9 @@ import eyes, contour
 # filenames = [0] * length
 # for i in range(length):
 #     filenames[i] = path + files[i]
-# capture = cv2.VideoCapture(0)
-capture = cv2.VideoCapture('C:/Users/User/OneDrive/Duke/6_Spring_2016/ECE_590/drowsiness-detection/Training_Data/Videos/Tom/20160220_110118.mp4')
-scale = 0.25
+capture = cv2.VideoCapture(0)
+# capture = cv2.VideoCapture('C:/Users/User/OneDrive/Duke/6_Spring_2016/ECE_590/drowsiness-detection/Training_Data/Videos/Tom/20160220_110118.mp4')
+scale = 1.0
 border = 10
 
 # cv2.namedWindow('in')
@@ -35,9 +36,9 @@ while capture.isOpened():
             # cv2.moveWindow('in', 400, 0)
             # cv2.resizeWindow('in', 400, 400)
             # img_out = eyes.show_eyes(img)
-            img = eyes.find_eyes(img, border)
+            eye_rect = eyes.find_eyes(img, border)
             # cv2.imshow('out', img)
-            eye_rect = contour.find_bounding_rect(img)
+            # eye_rect = contour.find_bounding_rect(img)
             img_out = contour.draw_rect_contour(img, eye_rect)
             cv2.imshow('out', img_out)
         else:

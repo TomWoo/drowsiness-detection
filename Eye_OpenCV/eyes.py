@@ -48,7 +48,9 @@ def find_eyes(img_in, border):
     # if eyes_rect is not None:
     #     cv2.rectangle(img, (x, y), (x+width, y+height), (0, 255, 0), 2)
 
-    # (x, y, width, height) = eyes_rect
+    if (eyes_rect is None) or (eyes_rect[2]*eyes_rect[3] <= border*border):
+        return (0, 0, 0, 0)
+    (global_x, global_y, global_w, global_h) = eyes_rect
     x = eyes_rect[0]-border
     y = eyes_rect[1]-border
     width = eyes_rect[2]+2*border
@@ -67,6 +69,8 @@ def find_eyes(img_in, border):
     eyes_roi = eyes_roi*mask2[:,:,np.newaxis]
     eyes_roi[:height, width-reduced_width:, :] = np.zeros((height, reduced_width, 3), np.uint8)
 
-    img_out = cv2.resize(eyes_roi, (2*width, 2*height))
+    # img_out = cv2.resize(eyes_roi, (2*width, 2*height))
     # img_out = contour.draw_rect_contour(eyes_roi, right_eye_rect)
-    return img_out
+    local_eye_rect = contour.find_bounding_rect(eyes_roi)
+    # TODO: fix position offset hack!
+    return (local_eye_rect[0]+global_x, local_eye_rect[1]+global_y-global_h/4, local_eye_rect[2], local_eye_rect[3])
