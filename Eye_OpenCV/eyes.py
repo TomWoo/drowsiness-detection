@@ -2,6 +2,7 @@ import cv2
 # import cv
 import numpy as np
 from copy import copy
+import contour
 
 # TODO: define path(s)
 # face_cascade = cv2.CascadeClassifier('C:/Users/User/Desktop/opencv/sources/data/haarcascades/haarcascade_frontalface_default.xml')
@@ -67,4 +68,5 @@ def find_eyes(img_in, border):
     eyes_roi[:height, width-reduced_width:, :] = np.zeros((height, reduced_width, 3), np.uint8)
 
     img_out = cv2.resize(eyes_roi, (2*width, 2*height))
+    # img_out = contour.draw_rect_contour(eyes_roi, right_eye_rect)
     return img_out

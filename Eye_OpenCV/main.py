@@ -1,6 +1,7 @@
 import cv2
-import eyes
 import time
+import eyes, contour
+
 # import matlab.engine
 
 # eng = matlab.engine.start_matlab("'cd C:/Users/User/OneDrive/Duke/6_Spring_2016/ECE_590/drowsiness-detection/Eye'")
@@ -34,7 +35,10 @@ while capture.isOpened():
             # cv2.moveWindow('in', 400, 0)
             # cv2.resizeWindow('in', 400, 400)
             # img_out = eyes.show_eyes(img)
-            img_out = eyes.find_eyes(img, border)
+            img = eyes.find_eyes(img, border)
+            # cv2.imshow('out', img)
+            eye_rect = contour.find_bounding_rect(img)
+            img_out = contour.draw_rect_contour(img, eye_rect)
             cv2.imshow('out', img_out)
         else:
             print 'zero size'
