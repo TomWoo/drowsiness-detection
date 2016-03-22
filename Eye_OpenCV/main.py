@@ -4,10 +4,6 @@ import eyes
 import contour
 import matplotlib.pyplot as plt
 
-# import matlab.engine
-
-# eng = matlab.engine.start_matlab("'cd C:/Users/User/OneDrive/Duke/6_Spring_2016/ECE_590/drowsiness-detection/Eye'")
-
 # path = 'C:/Users/User/OneDrive/Duke/6_Spring_2016/ECE_590/drowsiness-detection/Training_Data/images/Tom/'
 # files = ['right_1.png', 'right_2.png']
 # length = len(files)
@@ -15,12 +11,13 @@ import matplotlib.pyplot as plt
 # for i in range(length):
 #     filenames[i] = path + files[i]
 
-capture = cv2.VideoCapture(0)
+capture = cv2.VideoCapture(0)  # TODO: use next line instead for video instead of webcam
 # capture = cv2.VideoCapture('C:/Users/User/OneDrive/Duke/6_Spring_2016/ECE_590/drowsiness-detection/Training_Data/Videos/Tom/20160220_110118.mp4')
-scale = 1.0
-border = 10
+scale = 1.0  # TODO: decrease slightly for performance, but not too much; otherwise can be buggy
+border = 10  # TODO: optimize negative mask region (currently a border around positive mask region/rectangle); more or less optimized for myself
 
-fourcc = cv2.VideoWriter_fourcc('M','J','P','G')
+fourcc = cv2.VideoWriter_fourcc('M','J','P','G') # TODO: platform dependent video output; check using python os
+# TODO: establish relative path
 out = cv2.VideoWriter('C:/Users/User/OneDrive/Duke/6_Spring_2016/ECE_590/drowsiness-detection/Eye_OpenCV/output.avi', fourcc, 20.0, (640, 480))
 
 # Timeseries
@@ -55,14 +52,18 @@ while capture.isOpened():
             img_out = contour.draw_rect_contour(img, eye_rect)
             cv2.imshow('out', img_out)
 
-            # Plot timeseries
+            # # Plot timeseries
             total_elapsed_time = time.time() - init_time
-            percentage_eye_open = 0.5
-            if (eye_rect[2] != 0) and (eye_rect[3] != 0):
-                percentage_eye_open = eye_rect[2]/eye_rect[3]
+            percentage_eye_open = 0.0
+            if (eye_rect[2] > 0) and (eye_rect[3] > 0):
+                percentage_eye_open = 1.0*eye_rect[3]/eye_rect[2]
+            print 'width = ' + str(eye_rect[2])
+            print 'height = ' + str(eye_rect[3])
+            print 'percentage_eye_open = ' + str(percentage_eye_open)
             t_series.append(total_elapsed_time)
             percentage_open_series.append(percentage_eye_open)
 
+            # TODO: comment out graphing for performance
             plt.axis([0, total_elapsed_time+1, 0, 1])
             # plt.plot(t_series, percentage_open_series)
             plt.scatter(t_series, percentage_open_series)
@@ -74,9 +75,10 @@ while capture.isOpened():
 
         elapsed_time = time.time() - start_time
         fps = 1/elapsed_time
-        print 'fps = ' + str(fps)
+        # print 'fps = ' + str(fps)
         num_frames_out = int(30/fps)
         for i in range(num_frames_out):
+            # TODO: comment out video output for performance
             out.write(img_out)
     else:
         print 'no input'
@@ -88,5 +90,3 @@ while capture.isOpened():
 capture.release()
 out.release()
 cv2.destroyAllWindows()
-
-# eng.quit()
