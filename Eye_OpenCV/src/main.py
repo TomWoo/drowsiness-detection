@@ -3,9 +3,11 @@ import time
 import eyes
 import contour
 import matplotlib.pyplot as plt
+import os
 
-INPUT_FILE_PATH = '../inputFiles/inputTom.mp4';
-OUTPUT_FILE_PATH = '../outputFiles/detectedEyes.avi';
+filepath = os.path.dirname(os.path.dirname(os.path.abspath( __file__ )))  # Eye_OpenCV folder path
+INPUT_FILE_PATH = os.path.join(filepath, 'inputFiles\\inputTom.mp4')
+OUTPUT_FILE_PATH = os.path.join(filepath, 'outputFiles\\detectedEyes.avi')
 # path = 'C:/Users/User/OneDrive/Duke/6_Spring_2016/ECE_590/drowsiness-detection/Training_Data/images/Tom/'
 # files = ['right_1.png', 'right_2.png']
 # length = len(files)
@@ -13,12 +15,12 @@ OUTPUT_FILE_PATH = '../outputFiles/detectedEyes.avi';
 # for i in range(length):
 #     filenames[i] = path + files[i]
 
-#capture = cv2.VideoCapture(0)  # TODO: use next line instead for video instead of webcam
+# capture = cv2.VideoCapture(0)  # TODO: use next line instead for video instead of webcam
 capture = cv2.VideoCapture(INPUT_FILE_PATH)
-scale = 1.0  # TODO: decrease slightly for performance, but not too much; otherwise can be buggy
+scale = 0.80  # TODO: decrease slightly for performance, but not too much; otherwise can be buggy
 border = 10  # TODO: optimize negative mask region (currently a border around positive mask region/rectangle); more or less optimized for myself
 
-fourcc = cv2.VideoWriter_fourcc('M','J','P','G') # TODO: platform dependent video output; check using python os
+fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')  # TODO: platform dependent video output; check using python os
 # TODO: establish relative path
 out = cv2.VideoWriter(OUTPUT_FILE_PATH, fourcc, 20.0, (640, 480))
 
@@ -34,7 +36,7 @@ init_time = time.time()
 cv2.namedWindow('out')
 # i = 0
 key = -1
-while capture.isOpened():
+while capture.grab():  # capture.isOpened():
     start_time = time.time()
 
     success, img = capture.read()
@@ -66,11 +68,11 @@ while capture.isOpened():
             percentage_open_series.append(percentage_eye_open)
 
             # TODO: comment out graphing for performance
-            plt.axis([0, total_elapsed_time+1, 0, 1])
-            # plt.plot(t_series, percentage_open_series)
-            plt.scatter(t_series, percentage_open_series)
-            plt.draw()
-            plt.pause(0.001)
+            # plt.axis([0, total_elapsed_time+1, 0, 1])
+            # # plt.plot(t_series, percentage_open_series)
+            # plt.scatter(t_series, percentage_open_series)
+            # plt.draw()
+            # plt.pause(0.001)
         else:
             print 'zero size'
             break
@@ -78,10 +80,10 @@ while capture.isOpened():
         elapsed_time = time.time() - start_time
         fps = 1/elapsed_time
         # print 'fps = ' + str(fps)
-        num_frames_out = int(30/fps)
-        for i in range(num_frames_out):
-            # TODO: comment out video output for performance
-            out.write(img_out)
+        # TODO: comment out video output for performance
+        # num_frames_out = int(30/fps)
+        # for i in range(num_frames_out):
+        #     out.write(img_out)
     else:
         print 'no input'
         break

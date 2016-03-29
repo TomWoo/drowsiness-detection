@@ -3,8 +3,10 @@ import cv2
 import numpy as np
 from copy import copy
 import contour
+import os
 
-MODEL_FILE_PATH = '../modelFiles/haarcascade_mcs_eyepair_big.xml'
+filepath = os.path.dirname(os.path.dirname(os.path.abspath( __file__ )))  # Eye_OpenCV folder path
+MODEL_FILE_PATH = os.path.join(filepath, 'modelFiles\\haarcascade_mcs_eyepair_big.xml')
 # TODO: define relative path(s), already using the fastest cascade
 # face_cascade = cv2.CascadeClassifier('C:/Users/User/Desktop/opencv/sources/data/haarcascades/haarcascade_frontalface_default.xml')
 # eye_cascade = cv2.CascadeClassifier('C:/Users/User/Desktop/opencv/sources/data/haarcascades/haarcascade_eye.xml')
