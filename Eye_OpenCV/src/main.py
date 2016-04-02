@@ -40,8 +40,9 @@ else:
 out = cv2.VideoWriter(OUTPUT_FILE_PATH, fourcc, 20.0, (640, 480))
 
 # Timeseries
-t_series = []
+t_series =  []
 percentage_open_series = []
+min_val_series = []
 blink_series = []
 plt.ion()
 plt.show()
@@ -51,6 +52,7 @@ init_time = time.time()
 cv2.namedWindow('out')
 # i = 0
 key = -1
+count = 0
 
 print "Starting to process frames"
 while capture.isOpened():     
@@ -69,28 +71,27 @@ while capture.isOpened():
             # cv2.resizeWindow('in', 400, 400)
             # img_out = eyes.show_eyes(img)
             eye_rect = eyes.find_eyes(img, border)
-            # cv2.imshow('out', img)
+            if count == 0:
+                template = eye_rect
+                count = count + 1 
+            else:
+                res = cv2.matchTemplate(eye_rect,template,eval('cv2.TM_CCORR_NORMED'))
+                min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+
+                print "Min Value ", min_val, "Max Value", max_val
+            cv2.imshow('out', eye_rect)
             # eye_rect = contour.find_bounding_rect(img)
-            img_out = contour.draw_rect_contour(img, eye_rect)
-            cv2.imshow('out', img_out)
+            #img_out = contour.draw_rect_contour(img, eye_rect)
+            #cv2.imshow('out', img_out)
 
             # # Plot timeseries
-            total_elapsed_time = time.time() - init_time
-            percentage_eye_open = 0.0
-            if (eye_rect[2] > 0) and (eye_rect[3] > 0):
-                percentage_eye_open = 1.0*eye_rect[3]/eye_rect[2]
-            #print 'width = ' + str(eye_rect[2])
-            #print 'height = ' + str(eye_rect[3])
+            # total_elapsed_time = time.time() - init_time
+            # percentage_eye_open = 0.0
+            # if (eye_rect[2] > 0) and (eye_rect[3] > 0):
+            #     percentage_eye_open = 1.0*eye_rect[3]/eye_rect[2]
+            # print 'width = ' + str(eye_rect[2])
+            # print 'height = ' + str(eye_rect[3])
             #print 'percentage_eye_open = ' + str(percentage_eye_open)
-            t_series.append(total_elapsed_time)
-            percentage_open_series.append(percentage_eye_open)
-
-            # TODO: comment out graphing for performance
-            plt.axis([0, total_elapsed_time+1, 0, 1])
-            plt.plot(t_series, percentage_open_series)
-            plt.scatter(t_series, percentage_open_series)
-            plt.draw()
-            plt.pause(0.001)
         else:
             print 'zero size'
             break
