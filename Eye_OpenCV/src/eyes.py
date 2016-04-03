@@ -71,20 +71,23 @@ def find_eyes(img_in, border):
     height = eyes_rect[3]+2*border
 
     # Grabcut, reference on Google Drive
-    eyes_roi = img[y:y+height,x:x+width]
-    mask = np.zeros(eyes_roi.shape[:2],np.uint8)
-    bgdModel = np.zeros((1,65),np.float64)
-    fgdModel = np.zeros((1,65),np.float64)
-    reduced_width = int(width*width_reduction_factor)
-    right_eye_rect = (border, border, width-2*border, height-2*border) # TODO: optimize shape of positive mask
-    cv2.grabCut(eyes_roi,mask,right_eye_rect,bgdModel,fgdModel,num_iters,cv2.GC_INIT_WITH_RECT)
-    mask2 = np.where((mask==2)|(mask==0),0,1).astype('uint8')
+    # eyes_roi = img[y:y+height,x:x+width]
+    right_eye = img_gray[y+15:y+height-25,x:x+width-200]
 
-    eyes_roi = eyes_roi*mask2[:,:,np.newaxis]
-    eyes_roi[:height, width-reduced_width:, :] = np.zeros((height, reduced_width, 3), np.uint8)
+    # mask = np.zeros(eyes_roi.shape[:2],np.uint8)
+    # bgdModel = np.zeros((1,65),np.float64)
+    # fgdModel = np.zeros((1,65),np.float64)
+    # reduced_width = int(width*width_reduction_factor)
+    # right_eye_rect = (border, border, width-2*border, height-2*border) # TODO: optimize shape of positive mask
+    # cv2.grabCut(eyes_roi,mask,right_eye_rect,bgdModel,fgdModel,num_iters,cv2.GC_INIT_WITH_RECT)
+    # mask2 = np.where((mask==2)|(mask==0),0,1).astype('uint8')
+
+    # eyes_roi = eyes_roi*mask2[:,:,np.newaxis]
+    # eyes_roi[:height, width-reduced_width:, :] = np.zeros((height, reduced_width, 3), np.uint8)
 
     # img_out = cv2.resize(eyes_roi, (2*width, 2*height))
     # img_out = contour.draw_rect_contour(eyes_roi, right_eye_rect)
-    local_eye_rect = contour.find_bounding_rect(eyes_roi)
+    # local_eye_rect = contour.find_bounding_rect(eyes_roi)
     # TODO: fix position offset hack! (for some reason, the red boundng box needs to be shifted up by "-global_h/4")
-    return (local_eye_rect[0]+global_x, local_eye_rect[1]+global_y-global_h/4, local_eye_rect[2], local_eye_rect[3])
+    # return (local_eye_rect[0]+global_x, local_eye_rect[1]+global_y-global_h/4, local_eye_rect[2], local_eye_rect[3])
+    return right_eye
