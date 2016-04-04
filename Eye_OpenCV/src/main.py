@@ -53,11 +53,13 @@ cv2.namedWindow('out')
 # i = 0
 key = -1
 count = 0
+min_val = 0
+max_val = 0
 
 print "Starting to process frames"
 while capture.isOpened():     
     start_time = time.time()    
-
+    time.sleep(0.5)
     # Capture video frame-by-frame
     success, img = capture.read()
     # img = cv2.imread(filenames[i], cv2.IMREAD_COLOR)
@@ -79,6 +81,19 @@ while capture.isOpened():
                 min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
 
                 print "Min Value ", min_val, "Max Value", max_val
+
+            if min_val > 0.985:
+                print "100% Open"
+            elif min_val < 0.985 and min_val >= 0.96:
+                print "80% Open"
+            elif min_val < 0.96 and min_val >= 0.945:
+                print "50% Open"
+            elif min_val < 0.945 and min_val >= 0.92:
+                print "20% Open"
+            elif min_val <0.92:
+                print "0% Open"
+            else:
+                print "BOGUS EYE!"
             cv2.imshow('out', eye_rect)
             # eye_rect = contour.find_bounding_rect(img)
             #img_out = contour.draw_rect_contour(img, eye_rect)
