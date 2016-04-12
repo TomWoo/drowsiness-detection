@@ -30,7 +30,7 @@ scale = 0.80  # TODO: decrease slightly for performance, but not too much; other
 border = 10  # TODO: optimize negative mask region (currently a border around positive mask region/rectangle); more or less optimized for myself
 
 if 'posix' in os.name:
-    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+    fourcc = cv2.cv.CV_FOURCC(*'MJPG')
 elif 'nt' in os.name:
     fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
 else: 
@@ -53,8 +53,31 @@ cv2.namedWindow('out')
 # i = 0
 key = -1
 count = 0
-min_val = 0
-max_val = 0
+min_val = 1
+max_val = 1
+percentageClosureList = list()
+percentageClosureList.append(100)
+eyeStatusList = list()
+eyeOpen = True
+closedCounter = 0
+blinkCounter = 0
+openCounter = 0
+openStartFrame = 0
+closedStartFrame = 0
+frameNumber = 0
+openDuration = dict()
+openDuration["duration"] = list()
+openDuration["startFrame"] = list()
+closedDuration = dict()
+closedDuration["duration"] = list()
+closedDuration["startFrame"] = list()
+
+def isClosing():
+    return percentageClosureList[-1] < 60 and percentageClosureList[-2] > 60
+
+def isOpening():
+    return percentageClosureList[-1] > 60 and percentageClosureList[-2] < 60
+
 
 print "Starting to process frames"
 while capture.isOpened():     
@@ -80,21 +103,57 @@ while capture.isOpened():
                 res = cv2.matchTemplate(eye_rect,template,eval('cv2.TM_CCORR_NORMED'))
                 min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
 
-                print "Min Value ", min_val, "Max Value", max_val
+                #print "Min Value ", min_val, "Max Value", max_val
 
-            if min_val > 0.985:
-                print "100% Open"
+            if min_val >= 0.985:
+                nextGraphVal = 100
             elif min_val < 0.985 and min_val >= 0.96:
-                print "80% Open"
+                nextGraphVal = 80
             elif min_val < 0.96 and min_val >= 0.945:
-                print "50% Open"
+                nextGraphVal = 50
             elif min_val < 0.945 and min_val >= 0.92:
-                print "20% Open"
+                nextGraphVal = 20
             elif min_val <0.92:
-                print "0% Open"
-            else:
-                print "BOGUS EYE!"
+                nextGraphVal = 0
             cv2.imshow('out', eye_rect)
+            
+            percentageClosureList.append(nextGraphVal)
+
+            # Calculating duration of eye closure
+            if isClosing() :
+                closedCounter = 0
+                closedStartFrame = frameNumber
+                print("\t\t\t\t\t BLINK STARTED")
+                print "\t\t\t\t\t OPEN DURATION (FRAMES) " , openCounter
+                openDuration["duration"].append(openCounter)
+                openDuration["startFrame"].append(openStartFrame)
+            if isOpening() :
+                print("\t\t\t\t\t BLINK ENDED")
+                print "\t\t\t\t\t CLOSED DURATION (FRAMES) " , closedCounter
+                blinkCounter = blinkCounter + 1
+                openCounter = 0
+                openStartFrame = frameNumber
+                closedDuration["duration"].append(closedCounter)
+                closedDuration["startFrame"].append(closedStartFrame)
+
+            print nextGraphVal, "% open"
+            print "openList", openDuration
+            print "closedList", closedDuration
+
+            if(percentageClosureList[-1]<60):
+                eyeOpen = False
+            else:
+                eyeOpen = True
+
+            if eyeOpen:
+                openCounter = openCounter + 1
+            else:
+                closedCounter = closedCounter + 1
+
+            # Plotting graph of percentage closures
+            #plt.plot(percentageClosureList, '.-')
+            #plt.ylim([-10, 110])
+
             # eye_rect = contour.find_bounding_rect(img)
             #img_out = contour.draw_rect_contour(img, eye_rect)
             #cv2.imshow('out', img_out)
@@ -124,6 +183,7 @@ while capture.isOpened():
     # i += 1
     if cv2.waitKey(30) == ord('q'):
         break
+    frameNumber = frameNumber + 1
 
 capture.release()
 out.release()
