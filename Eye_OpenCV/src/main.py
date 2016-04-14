@@ -12,7 +12,7 @@ if 'posix' in os.name:
     INPUT_FILE_PATH = os.path.join(filepath, 'inputFiles/inputTom.mp4')
     OUTPUT_FILE_PATH = os.path.join(filepath, 'outputFiles/detectedEyes.avi')
 elif 'nt' in os.name:
-    INPUT_FILE_PATH = os.path.join(filepath, 'inputFiles\\inputTom.mp4')
+    INPUT_FILE_PATH = os.path.join(filepath, 'inputFiles\\awake\\20160323_161326.mp4')
     OUTPUT_FILE_PATH = os.path.join(filepath, 'outputFiles\\detectedEyes.avi')
 else:
     print "Horridly Unsupported OS! Bamn!"
@@ -151,8 +151,8 @@ while capture.isOpened():
                 closedCounter = closedCounter + 1
 
             # Plotting graph of percentage closures
-            #plt.plot(percentageClosureList, '.-')
-            #plt.ylim([-10, 110])
+            plt.plot(percentageClosureList, '.-')
+            plt.ylim([-10, 110])
 
             # eye_rect = contour.find_bounding_rect(img)
             #img_out = contour.draw_rect_contour(img, eye_rect)
@@ -181,7 +181,7 @@ while capture.isOpened():
         print 'no input'
         break
     # i += 1
-    if cv2.waitKey(30) == ord('q'):
+    if cv2.waitKey(10) == ord('q'):
         break
     frameNumber = frameNumber + 1
 
